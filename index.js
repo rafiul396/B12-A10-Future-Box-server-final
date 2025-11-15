@@ -29,10 +29,17 @@ async function run() {
         const db = client.db("financeDB");
         const dataCollection = db.collection("main-data");
 
-         app.get('/my-transaction', async (req, res) => {
+        app.get('/my-transaction', async (req, res) => {
             const email = req.query.email;
-            const cursor = dataCollection.find({ email : email }).sort({amount : -1});
+            const cursor = dataCollection.find({ email: email }).sort({ amount: -1 });
             const result = await cursor.toArray();
+            res.send(result)
+        })
+
+        app.get('/my-transaction/:id', async (req, res) => {
+            const { id } = req.params;
+            const query = { _id: new ObjectId(id) }
+            const result = await dataCollection.findOne(query)
             res.send(result)
         })
 
