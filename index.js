@@ -29,11 +29,19 @@ async function run() {
         const db = client.db("financeDB");
         const dataCollection = db.collection("main-data");
 
+         app.get('/my-transaction', async (req, res) => {
+            const email = req.query.email;
+            const cursor = dataCollection.find({ email : email }).sort({amount : -1});
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
         app.post('/my-transaction', async (req, res) => {
             const data = req.body;
             const result = await dataCollection.insertOne(data)
             res.send(result)
         })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
